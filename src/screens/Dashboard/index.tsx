@@ -1,11 +1,11 @@
-import { useNavigation } from '@react-navigation/core';
-import React, { useRef, useState } from 'react';
-import { TextInput } from 'react-native';
+import { useNavigation } from '@react-navigation/core'
+import React, { useRef, useState } from 'react'
+import { TextInput } from 'react-native'
 
-import { Background } from '../../components/Background';
-import { Card } from '../../components/Card';
+import { Background } from '../../components/Background'
+import { Card } from '../../components/Card'
 
-import { useRepositories } from '../../hooks/useRepositories';
+import { useRepositories } from '../../hooks/useRepositories'
 
 import {
   Container,
@@ -15,35 +15,26 @@ import {
   InputField,
   InputButton,
   Icon,
-  RepositoriesList
-} from './styles';
+  RepositoriesList,
+} from './styles'
 
 export function Dashboard() {
-  const [inputText, setInputText] = useState('');
-  const inputRef = useRef<TextInput>(null);
+  const [inputText, setInputText] = useState('')
+  const inputRef = useRef<TextInput>(null)
 
-  const { navigate } = useNavigation();
+  const { navigate } = useNavigation()
 
-  const { addRepository, repositories } = useRepositories();
+  const { addRepository, repositories } = useRepositories()
 
   function handleAddRepository() {
-    /**
-     * TODO: 
-     * - call addRepository function sending inputText value;
-     * - clean inputText value.
-     */
-    inputRef.current?.blur();
+    addRepository(inputText)
+    setInputText('')
+
+    inputRef.current?.blur()
   }
 
   function handleRepositoryPageNavigation(id: number) {
-    /**
-     * TODO - navigate to the Repository screen sending repository id.
-     * Remember to use the correct prop name (repositoryId) to the repositoy id:
-     * 
-     * navigate(SCREEN NAME, {
-     *  repositoryId: id of the repository
-     * })
-     */
+    navigate('Repository', { repositoryId: id })
   }
 
   return (
@@ -57,25 +48,17 @@ export function Dashboard() {
               ref={inputRef}
               placeholder="Digite aqui 'usuário/repositório'"
               value={inputText}
-              /**
-               * TODO - update inputText value when input text value 
-               * changes:
-               * onChangeText={YOUR CODE HERE}
-               */
+              onChangeText={setInputText}
               onSubmitEditing={handleAddRepository}
               returnKeyType="send"
-              autoCapitalize='none'
+              autoCapitalize="none"
               autoCorrect={false}
             />
 
             <InputButton
               testID="input-button"
               onPress={handleAddRepository}
-            /**
-             * TODO - ensure to disable button when inputText is 
-             * empty (use disabled prop to this):
-             * disabled={CONDITION HERE}
-             */
+              disabled={!inputText}
             >
               <Icon name="search" size={20} />
             </InputButton>
@@ -85,7 +68,7 @@ export function Dashboard() {
         <RepositoriesList
           data={repositories}
           showsVerticalScrollIndicator={false}
-          keyExtractor={repository => String(repository.id)}
+          keyExtractor={(repository) => String(repository.id)}
           renderItem={({ item: repository }) => (
             <Card
               key={repository.id}
@@ -93,7 +76,7 @@ export function Dashboard() {
                 id: repository.id,
                 title: repository.full_name,
                 subTitle: repository.description,
-                imageUrl: repository.owner.avatar_url
+                imageUrl: repository.owner.avatar_url,
               }}
               onPress={() => handleRepositoryPageNavigation(repository.id)}
             />
